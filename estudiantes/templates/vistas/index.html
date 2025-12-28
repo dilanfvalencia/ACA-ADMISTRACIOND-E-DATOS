@@ -1,0 +1,36 @@
+{% extends "vistas/base.html" %}
+
+{%block titulo %} Inicio {%endblock%}
+
+{% block content %}
+<p class="title" >Bienvenido al Colegio Moderno Valencia Cardona I.E.D </p>
+<div class="cards">
+
+
+
+{% if estudiantes %}
+  
+{% for estudiante in estudiantes %}
+    
+<div class="card" style="width: 18rem;">
+  <img src="https://upload.wikimedia.org/wikipedia/commons/5/52/Spider-Man.jpg " class="card-img-top" alt="...">
+  <div class="card-body">
+    <p class="card-text">Nombre: {{ estudiante.nombre }}</p>
+    <p>Curso: {{ estudiante.curso }} </p>
+    <p>Edad: {{ estudiante.edad  }}  </p>
+  </div>
+</div>
+
+{% endfor %}
+  {% else  %}
+    <p> NO HAY NINGUN USUARIO REGISTRADO! </p>
+ 
+{% endif%}
+
+
+
+
+
+
+</div>
+{% endblock %}

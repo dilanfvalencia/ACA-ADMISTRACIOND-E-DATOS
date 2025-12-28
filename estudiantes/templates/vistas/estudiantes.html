@@ -1,0 +1,127 @@
+{% extends "vistas/base.html" %}
+{% csrf_token %}
+{%block titulo %} Inicio {%endblock%}
+
+{% block content %}
+<p class="title" >Estudiantes </p>
+<!-- Boton para registra estudiantes-->
+    <a href="" data-bs-toggle="modal"  data-bs-target="#exampleModal" class="btn-registrar">
+        ➕ Registrar estudiante
+    </a>
+
+    <!-- Modal Registrar Estudiante -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+        <div class="modal-header">
+            <h1 class="modal-title fs-5" id="exampleModalLabel">Registrar Estudiante</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <form action="{% url 'registrar_estudiante' %}" method ="POST">
+                {% csrf_token %}
+                <div class="">
+                    <label for="nombre" class="form-label">Nombre :</label>
+                    <input type="text" class="form-control" name="nombre">
+                </div>
+                <div>
+                    <label for="apellido" class="form-label">Apellido :</label>
+                    <input type="text" class="form-control" name="apellido">
+                </div>
+                <div>
+                    <label for="edad" class="form-label">Edad :</label>
+                    <input type="text" class="form-control" name="edad">
+                </div>
+                
+                <div>
+                    <label for="select" class="form-label">curso :</label>
+                    <select type="select" name="curso" class="form-select">
+                    <option value="405">405</option>
+                    <option value="402">402</option>
+                    <option value="401">401</option>
+                    <option value="403">403</option>
+
+                    </select>
+                </div>
+            <input type="submit" class="btn btn-primary " value="Enviar">
+                
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
+        </div>
+    </div>
+    </div>
+
+<div class="table-container">
+    <table class="tabla">
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Edad</th>
+                <th>Foto</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for estudiante in estudiantes %}
+            <tr>
+                <td data-label="Nombre">{{ estudiante.nombre }}</td>
+                <td data-label="Edad">{{ estudiante.edad }}</td>
+                <td data-label="Foto">Aqui va la foto</td>
+                <td data-label="Acciones">
+                    <!-- Editar Estudiante-->
+
+                    <button class="btn btn-primary" data-bs-toggle="modal"  data-bs-target="#exampleModal{{estudiante.id}}"  ><i class="bi bi-pencil-square"></i></button>
+                    <div class="modal fade" id="exampleModal{{estudiante.id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content">
+                            <div class="modal-header">
+                                <h1 class="modal-title fs-5" id="exampleModalLabel">Registrar Estudiante</h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <form action="">
+                                    
+                                    <div class="">
+                                        <label for="nombre" class="form-label">Nombre :</label>
+                                        <input type="text" class="form-control" name="nombre" value="{{estudiante.nombre}}">
+                                    </div>
+                                    <div>
+                                        <label for="apellido" class="form-label">Apellido :</label>
+                                        <input type="text" class="form-control" name="apellido" value="{{ estudiante.apellido|default:''}}">
+                                    </div>
+                                    <div>
+                                        <label for="edad" class="form-label">Edad :</label>
+                                        <input type="text" class="form-control" name="edad" value="{{ estudiante.edad|default:''}}" >
+                                    </div>
+                                    
+                                    <div>
+                                        <label for="select" class="form-label">curso :</label>
+                                        <select type="select" class="form-select">
+                                        <option value="405">405</option>
+                                        <option value="402">402</option>
+                                        <option value="401">401</option>
+                                        <option value="403">403</option>
+
+                                        </select>
+                                    </div>
+                                    
+                                </form>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                <button type="button" class="btn btn-primary">Guardar</button>
+                            </div>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="btn btn-danger" onclick='confirmarEliminar({{ estudiante.id }})' >  <i class="bi bi-trash3-fill"></i> </button>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}
