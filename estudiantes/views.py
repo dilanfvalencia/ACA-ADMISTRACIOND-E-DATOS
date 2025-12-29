@@ -28,7 +28,7 @@ def eliminar_estudiante(request, id):
     if request.method == 'POST':
         estudiante = Estudiantes.objects.get(id=id)
         estudiante.delete()
-
+ 
         return JsonResponse({'data': True})
 
 def registrar_estudiante(request):
@@ -38,7 +38,7 @@ def registrar_estudiante(request):
         edad = request.POST.get('edad')
         curso = request.POST.get('curso')
 
-        print(curso)
+       
         estudiante = Estudiantes.objects.create(
             nombre = nombre,
             apellido = apellido,
