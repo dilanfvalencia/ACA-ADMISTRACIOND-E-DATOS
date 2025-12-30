@@ -1,5 +1,5 @@
 from django.http import JsonResponse
-from django.shortcuts import render
+from django.shortcuts import redirect, render
 from .models import *
 # Create your views here.
 
@@ -24,6 +24,8 @@ def estudiantes(request):
         'estudiantes': estudiantes
     })
 
+#Funcion para eliminar los estudiantes 
+
 def eliminar_estudiante(request, id):
     if request.method == 'POST':
         estudiante = Estudiantes.objects.get(id=id)
@@ -31,6 +33,7 @@ def eliminar_estudiante(request, id):
  
         return JsonResponse({'data': True})
 
+#Funcion para registrar los estudiantes 
 def registrar_estudiante(request):
     if request.method == 'POST':
         nombre = request.POST.get('nombre')
@@ -47,4 +50,6 @@ def registrar_estudiante(request):
         )
         estudiante.save()
         
-    return render(request, 'vistas/estudiantes.html')
+    return redirect('estudiantes')
+
+

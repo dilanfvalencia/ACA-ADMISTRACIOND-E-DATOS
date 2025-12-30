@@ -18,6 +18,7 @@
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
+            <!--  Formulario de registro -->
             <form action="{% url 'registrar_estudiante' %}" method ="POST">
                 {% csrf_token %}
                 <div class="">
@@ -83,7 +84,7 @@
                             </div>
                             <div class="modal-body">
                                 <form action="">
-                                    
+                                    {% csrf_token %}
                                     <div class="">
                                         <label for="nombre" class="form-label">Nombre :</label>
                                         <input type="text" class="form-control" name="nombre" value="{{estudiante.nombre}}">
