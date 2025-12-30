@@ -8,9 +8,8 @@ from .models import *
 def index(request):
 
     estudiantes = Estudiantes.objects.all()
-    print(estudiantes)
-
-
+    
+ 
     return render(request, 'vistas/index.html', {
         'estudiantes': estudiantes
     })
