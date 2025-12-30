@@ -35,14 +35,19 @@
                 </div>
                 
                 <div>
-                    <label for="select" class="form-label">curso :</label>
-                    <select type="select" name="curso" class="form-select">
-                    <option value="405">405</option>
-                    <option value="402">402</option>
-                    <option value="401">401</option>
-                    <option value="403">403</option>
-
+                    <label>Curso:</label>
+                    <select name="curso" id="curso" class="form-select" required >
+                    <option value=""  >Seleccione</option>
+                        {% for curso in cursos %}
+                            <option value="{{ curso.id }}">
+                                {{ curso.nombre_curso }}
+                            </option>
+                        {% endfor %}
                     </select>
+                     <div>
+                        <label>Materias del curso:</label>
+                        <ul id="materias"></ul>
+                    </div>
                 </div>
             <input type="submit" class="btn btn-primary " value="Enviar">
                 
@@ -83,7 +88,7 @@
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
                             <div class="modal-body">
-                                <form action="">
+                                <form action="{% url 'editar_usuario' estudiante.id %}" method="POST">
                                     {% csrf_token %}
                                     <div class="">
                                         <label for="nombre" class="form-label">Nombre :</label>
@@ -98,30 +103,42 @@
                                         <input type="text" class="form-control" name="edad" value="{{ estudiante.edad|default:''}}" >
                                     </div>
                                     
-                                    <div>
-                                        <label for="select" class="form-label">curso :</label>
-                                        <select type="select" class="form-select">
-                                        {% if estudiante.curso ==   %}
-                                            
-                                        
-                                        {% endif %}
-                                        <option value="405">405</option>
-                                        <option value="402">402</option>
-                                        <option value="401">401</option>
-                                        <option value="403">403</option>
+                                   <div>
+                                        <label>Curso:</label>
+                                        <select name="curso_e" id="curso_e" class="form-select" required >
+                                        <option value=""  >Seleccione</option>
+                                            {% for curso in cursos %}
+                                                {% if estudiante.curso.id == curso.id  %}
+                                                    <option value="{{ curso.id }}" selected>
+                                                        {{ curso.nombre_curso }}
+                                                    </option>
+                                                {%else%}
+                                                <option value="{{ curso.id }}">
+                                                    {{ curso.nombre_curso }}
+                                                </option>
+                                                {% endif %}
 
+                                             
+                                            {% endfor %}
                                         </select>
+                                        <div>
+                                            <label>Materias del curso:</label>
+                                            <ul id="materias_e"></ul>
+                                        </div>
                                     </div>
-                                    
+                                    <input type="submit" value="Editar">
                                 </form>
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                <button type="button" class="btn btn-primary">Guardar</button>
+                               
                             </div>
+
                             </div>
                         </div>
                     </div>
+
+
                     <button class="btn btn-danger" onclick='confirmarEliminar({{ estudiante.id }})' >  <i class="bi bi-trash3-fill"></i> </button>
             </tr>
             {% endfor %}
@@ -129,4 +146,38 @@
     </table>
 </div>
 
+<script>
+document.getElementById("curso").addEventListener("change", function () {
+    const cursoId = this.value;
+    const ul = document.getElementById("materias");
+    ul.innerHTML = "";
+
+    if (!cursoId) return;
+
+    fetch(`/materias-por-curso/${cursoId}/`)
+        .then(res => res.json())
+        .then(data => {
+            data.forEach(materia => {
+                console.log(materia.nombre)
+                ul.innerHTML += `<li>${materia.materia__nombre}</li>`;
+            });
+        });
+});
+document.getElementById("curso_e").addEventListener("change", function () {
+    const cursoId = this.value;
+    const ul = document.getElementById("materias_e");
+    ul.innerHTML = "";
+
+    if (!cursoId) return;
+
+    fetch(`/materias-por-curso/${cursoId}/`)
+        .then(res => res.json())
+        .then(data => {
+            data.forEach(materia => {
+                console.log(materia.nombre)
+                ul.innerHTML += `<li>${materia.materia__nombre}</li>`;
+            });
+        });
+});
+</script>
 {% endblock %}

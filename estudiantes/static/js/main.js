@@ -12,10 +12,11 @@ function eliminarEstudiante(id) {
     })
     .then(response => response.json())
     .then(data => {
-        if (data.success) {
+       if (data.success) {
             Swal.fire('Eliminado', 'Estudiante eliminado correctamente', 'success')
                 .then(() => location.reload());
         }
+       
     });
 }
 
@@ -29,19 +30,19 @@ function confirmarEliminar(id){
   buttonsStyling: false
 });
 swalWithBootstrapButtons.fire({
-  title: "Are you sure?",
-  text: "You won't be able to revert this!",
+  title: "Estas seguro?",
+  text: "Ya no podrás revertir esto!",
   icon: "warning",
   showCancelButton: true,
-  confirmButtonText: "Yes, delete it!",
-  cancelButtonText: "No, cancel!",
+  confirmButtonText: "Sí, Bórralo!",
+  cancelButtonText: "No, Cancelar!",
   reverseButtons: true
 }).then((result) => {
   if (result.isConfirmed) {
     eliminarEstudiante(id)
     swalWithBootstrapButtons.fire({
-      title: "Deleted!",
-      text: "Your file has been deleted.",
+      title: "Borrado!!",
+      text: "Se ha borrrado satisfactoriamente.",
       icon: "success"
     });
   } else if (
@@ -49,11 +50,16 @@ swalWithBootstrapButtons.fire({
     result.dismiss === Swal.DismissReason.cancel
   ) {
     swalWithBootstrapButtons.fire({
-      title: "Cancelled",
-      text: "Your imaginary file is safe :)",
+      title: "Cancelado!",
+      text: "Uy! casi lo borras eh!... :)",
       icon: "error"
     });
   }
 }); 
 }
 
+function confirmarEditar(id){
+
+  
+
+}

@@ -7,6 +7,10 @@ class Materia (models.Model):
     id = models.AutoField(primary_key=True)
     nombre = models.CharField(max_length=30)
 
+    def __str__(self):
+        return self.name
+    
+
 class Curso(models.Model):
     id=models.AutoField(primary_key=True)
     nombre_curso = models.CharField(max_length=30)
