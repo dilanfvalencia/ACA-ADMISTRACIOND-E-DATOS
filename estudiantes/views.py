@@ -1,3 +1,4 @@
+from pyexpat.errors import messages
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from .models import *
@@ -63,7 +64,7 @@ def registrar_estudiante(request):
 def materias_por_curso(request, curso_id):
     #Obtiene el curso con el ID que trae del template
     curso = Curso.objects.get(id=curso_id)  
-    
+
     #filtra en la tabla intermedia de cursoMateria y busca las materias que esten asociadas a ese ID del curso
     materias = CursoMateria.objects.filter(
         curso=curso
@@ -79,17 +80,25 @@ def materias_por_curso(request, curso_id):
 def editar_usuario(request, id):
     estudiante = Estudiantes.objects.get(id = id)
 
-    print(estudiante.nombre)
+    
     if request.method == "POST" :
         
         estudiante.nombre = request.POST.get('nombre')
         estudiante.apellido = request.POST.get('apellido')
         estudiante.edad = request.POST.get('edad')
         curso_e = request.POST.get('curso_e')
-        curso = Curso.object.get(id=curso_e)
-        estudiante.curso
+        estudiante.curso = Curso.objects.get(id = curso_e)
+
         estudiante.save()
 
-        return redirect('estudiantes')
-    
-    return render(request,'vistas/estudiantes.html')
+        return JsonResponse(
+        {
+            "success": True,
+            "id": estudiante.id,
+            "nombre": estudiante.nombre,
+            "edad": estudiante.edad,
+            "curso": estudiante.curso.nombre_curso,
+            "message": "Editado Correctamente!",
+        })
+            
+   

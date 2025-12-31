@@ -11,76 +11,79 @@
 
     <!-- Modal Registrar Estudiante -->
     <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-        <div class="modal-header">
-            <h1 class="modal-title fs-5" id="exampleModalLabel">Registrar Estudiante</h1>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-            <!--  Formulario de registro -->
-            <form action="{% url 'registrar_estudiante' %}" method ="POST">
-                {% csrf_token %}
-                <div class="">
-                    <label for="nombre" class="form-label">Nombre :</label>
-                    <input type="text" class="form-control" name="nombre">
-                </div>
-                <div>
-                    <label for="apellido" class="form-label">Apellido :</label>
-                    <input type="text" class="form-control" name="apellido">
-                </div>
-                <div>
-                    <label for="edad" class="form-label">Edad :</label>
-                    <input type="text" class="form-control" name="edad">
-                </div>
-                
-                <div>
-                    <label>Curso:</label>
-                    <select name="curso" id="curso" class="form-select" required >
-                    <option value=""  >Seleccione</option>
-                        {% for curso in cursos %}
-                            <option value="{{ curso.id }}">
-                                {{ curso.nombre_curso }}
-                            </option>
-                        {% endfor %}
-                    </select>
-                     <div>
-                        <label>Materias del curso:</label>
-                        <ul id="materias"></ul>
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Registrar Estudiante</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <!--  Formulario de registro -->
+                <form action="{% url 'registrar_estudiante' %}" method ="POST">
+                    {% csrf_token %}
+                    <div class="">
+                        <label for="nombre" class="form-label">Nombre :</label>
+                        <input type="text" class="form-control" name="nombre">
                     </div>
-                </div>
-            <input type="submit" class="btn btn-primary " value="Enviar">
-                
-            </form>
+                    <div>
+                        <label for="apellido" class="form-label">Apellido :</label>
+                        <input type="text" class="form-control" name="apellido">
+                    </div>
+                    <div>
+                        <label for="edad" class="form-label">Edad :</label>
+                        <input type="text" class="form-control" name="edad">
+                    </div>
+                    
+                    <div>
+                        <label>Curso:</label>
+                        <select name="curso" id="curso" class="form-select" required >
+                        <option value=""  >Seleccione</option>
+                            {% for curso in cursos %}
+                                <option value="{{ curso.id }}">
+                                    {{ curso.nombre_curso }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                        <div>
+                            <label>Materias del curso:</label>
+                            <ul id="materias"></ul>
+                        </div>
+                    </div>
+                <input type="submit" class="btn btn-primary " value="Enviar">
+                    
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+            </div>
         </div>
-        <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        </div>
-        </div>
-    </div>
     </div>
 
 <div class="table-container">
     <table class="tabla">
         <thead>
-            <tr>
+            <tr >
                 <th>Nombre</th>
                 <th>Edad</th>
                 <th>Foto</th>
+                <th>Curso</th>
                 <th>Acciones</th>
             </tr>
         </thead>
         <tbody>
             {% for estudiante in estudiantes %}
-            <tr>
-                <td data-label="Nombre">{{ estudiante.nombre }}</td>
-                <td data-label="Edad">{{ estudiante.edad }}</td>
-                <td data-label="Foto">Aqui va la foto</td>
+            <tr id="fila-{{ estudiante.id }}" >
+                <td data-label="Nombre" class="nombre" >{{ estudiante.nombre }}</td>
+                <td data-label="Edad" class="edad" >{{ estudiante.edad }}</td>
+                <td data-label="Foto"class="foto"  >Aqui va la foto</td>
+                <td data-label="Curso" class="curso" >{{estudiante.curso.nombre_curso }} </td>
+
                 <td data-label="Acciones">
                     <!-- Editar Estudiante-->
 
-                    <button class="btn btn-primary" data-bs-toggle="modal"  data-bs-target="#exampleModal{{estudiante.id}}"  ><i class="bi bi-pencil-square"></i></button>
-                    <div class="modal fade" id="exampleModal{{estudiante.id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <button class="btn btn-primary" data-bs-toggle="modal"  data-bs-target="#modalEditar{{estudiante.id}}"  ><i class="bi bi-pencil-square"></i></button>
+                    <div class="modal fade" id="modalEditar{{estudiante.id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                         <div class="modal-dialog modal-dialog-centered">
                             <div class="modal-content">
                             <div class="modal-header">
@@ -88,7 +91,7 @@
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
                             <div class="modal-body">
-                                <form action="{% url 'editar_usuario' estudiante.id %}" method="POST">
+                                <form id="formularioEdicion"  action="{% url 'editar_usuario' estudiante.id %}" method='post'>
                                     {% csrf_token %}
                                     <div class="">
                                         <label for="nombre" class="form-label">Nombre :</label>
@@ -126,7 +129,7 @@
                                             <ul id="materias_e"></ul>
                                         </div>
                                     </div>
-                                    <input type="submit" value="Editar">
+                                    <input type="submit" class="btn btn-primary" value="Editar">
                                 </form>
                             </div>
                             <div class="modal-footer">
@@ -163,6 +166,7 @@ document.getElementById("curso").addEventListener("change", function () {
             });
         });
 });
+
 document.getElementById("curso_e").addEventListener("change", function () {
     const cursoId = this.value;
     const ul = document.getElementById("materias_e");
@@ -179,5 +183,40 @@ document.getElementById("curso_e").addEventListener("change", function () {
             });
         });
 });
+
+const form = document.getElementById('formularioEdicion')
+form.addEventListener("submit", function(e){
+    e.preventDefault();
+
+    const formData = new FormData(form);
+    fetch(form.action || window.location.pathname,{
+        method: "POST",
+        headers: {
+            "X-CSRFToken": getCookie("csrftoken") 
+        },
+        body: formData
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.success){
+
+            const fila = document.getElementById(`fila-${data.id}`)
+            const modal = bootstrap.Modal.getInstance(
+            document.getElementById(`modalEditar${data.id}`)
+            );
+            modal.hide();
+            fila.querySelector(".nombre").textContent = data.nombre;
+            fila.querySelector(".edad").textContent = data.edad;
+            fila.querySelector(".curso").textContent = data.curso;
+            BtnClose = document.getElementById
+             Swal.fire({
+                icon: "success",
+                title: "Correcto",
+                text: data.message
+            });
+        }
+    }) ;
+});
+
 </script>
 {% endblock %}
