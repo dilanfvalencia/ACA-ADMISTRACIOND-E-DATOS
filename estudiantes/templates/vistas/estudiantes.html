@@ -75,7 +75,7 @@
             {% for estudiante in estudiantes %}
             <tr id="fila-{{ estudiante.id }}" >
                 <td data-label="Nombre" class="nombre" >{{ estudiante.nombre }}</td>
-                <td data-label="Edad" class="edad" >{{ estudiante.edad }}</td>
+                <td data-label="Edad" class="edad" >{{ estudiante.edad }} Años</td>
                 <td data-label="Foto"class="foto"  >Aqui va la foto</td>
                 <td data-label="Curso" class="curso" >{{estudiante.curso.nombre_curso }} </td>
 
@@ -91,7 +91,7 @@
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
                             <div class="modal-body">
-                                <form id="formularioEdicion"  action="{% url 'editar_usuario' estudiante.id %}" method='post'>
+                                <form class="formularioEdicion"  action="{% url 'editar_usuario' estudiante.id %}" method='post'>
                                     {% csrf_token %}
                                     <div class="">
                                         <label for="nombre" class="form-label">Nombre :</label>
@@ -108,7 +108,7 @@
                                     
                                    <div>
                                         <label>Curso:</label>
-                                        <select name="curso_e" id="curso_e" class="form-select" required >
+                                        <select name="curso_e" class="curso_e form-select"  required >
                                         <option value=""  >Seleccione</option>
                                             {% for curso in cursos %}
                                                 {% if estudiante.curso.id == curso.id  %}
@@ -126,7 +126,7 @@
                                         </select>
                                         <div>
                                             <label>Materias del curso:</label>
-                                            <ul id="materias_e"></ul>
+                                            <ul class="materias_e"></ul>
                                         </div>
                                     </div>
                                     <input type="submit" class="btn btn-primary" value="Editar">
@@ -167,56 +167,83 @@ document.getElementById("curso").addEventListener("change", function () {
         });
 });
 
-document.getElementById("curso_e").addEventListener("change", function () {
-    const cursoId = this.value;
-    const ul = document.getElementById("materias_e");
-    ul.innerHTML = "";
 
-    if (!cursoId) return;
+document.querySelectorAll(".curso_e").forEach(select => {
 
-    fetch(`/materias-por-curso/${cursoId}/`)
-        .then(res => res.json())
-        .then(data => {
-            data.forEach(materia => {
-                console.log(materia.nombre)
-                ul.innerHTML += `<li>${materia.materia__nombre}</li>`;
+    select.addEventListener("change", function () {
+
+        const cursoId = this.value;
+
+        // buscar SOLO el ul del modal actual
+        const ul = this
+            .closest(".modal-body")
+            .querySelector(".materias_e");
+
+        ul.innerHTML = "";
+
+        if (!cursoId) return;
+
+        fetch(`/materias-por-curso/${cursoId}/`)
+            .then(res => res.json())
+            .then(data => {
+                data.forEach(materia => {
+                    ul.innerHTML += `<li>${materia.materia__nombre}</li>`;
+                });
+            });
+    });
+
+});
+
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    document.querySelectorAll(".formularioEdicion").forEach(form => {
+
+        form.addEventListener("submit", function (e) {
+            e.preventDefault(); //  EVITA QUE SE ENVÍE NORMAL
+
+            const formData = new FormData(this);
+
+            fetch(this.action, {
+                method: "POST",
+                body: formData,
+                headers: {
+                    "X-CSRFToken": this.querySelector(
+                        "input[name='csrfmiddlewaretoken']"
+                    ).value
+                }
+            })
+            .then(res => res.json())
+            .then(data => {
+                console.log(data);
+
+                if (data.success) {
+
+                    const fila = document.getElementById(`fila-${data.id}`)
+                    const modal = bootstrap.Modal.getInstance(
+                    document.getElementById(`modalEditar${data.id}`)
+                    );
+                    modal.hide();
+                    fila.querySelector(".nombre").textContent = data.nombre;
+                    fila.querySelector(".edad").textContent = data.edad;
+                    fila.querySelector(".curso").textContent = data.curso;
+                    BtnClose = document.getElementById
+
+                    Swal.fire({
+                        icon: "success",
+                        title: "Correcto",
+                        text: data.message
+                    });
+              
+                }
             });
         });
+
+    });
+
 });
+</script>
 
-const form = document.getElementById('formularioEdicion')
-form.addEventListener("submit", function(e){
-    e.preventDefault();
-
-    const formData = new FormData(form);
-    fetch(form.action || window.location.pathname,{
-        method: "POST",
-        headers: {
-            "X-CSRFToken": getCookie("csrftoken") 
-        },
-        body: formData
-    })
-    .then(res => res.json())
-    .then(data => {
-        if (data.success){
-
-            const fila = document.getElementById(`fila-${data.id}`)
-            const modal = bootstrap.Modal.getInstance(
-            document.getElementById(`modalEditar${data.id}`)
-            );
-            modal.hide();
-            fila.querySelector(".nombre").textContent = data.nombre;
-            fila.querySelector(".edad").textContent = data.edad;
-            fila.querySelector(".curso").textContent = data.curso;
-            BtnClose = document.getElementById
-             Swal.fire({
-                icon: "success",
-                title: "Correcto",
-                text: data.message
-            });
-        }
-    }) ;
-});
 
 </script>
 {% endblock %}
