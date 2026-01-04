@@ -1,6 +1,6 @@
 {% extends "vistas/base.html" %}
 {% csrf_token %}
-{%block titulo %} Inicio {%endblock%}
+{%block titulo %} Informacion de Estudiantes {%endblock%}
 
 {% block content %}
 <p class="title" >Estudiantes </p>
@@ -13,237 +13,153 @@
     <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
-            <div class="modal-header">
-                <h1 class="modal-title fs-5" id="exampleModalLabel">Registrar Estudiante</h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <!--  Formulario de registro -->
-                <form action="{% url 'registrar_estudiante' %}" method ="POST">
-                    {% csrf_token %}
-                    <div class="">
-                        <label for="nombre" class="form-label">Nombre :</label>
-                        <input type="text" class="form-control" name="nombre">
-                    </div>
-                    <div>
-                        <label for="apellido" class="form-label">Apellido :</label>
-                        <input type="text" class="form-control" name="apellido">
-                    </div>
-                    <div>
-                        <label for="edad" class="form-label">Edad :</label>
-                        <input type="text" class="form-control" name="edad">
-                    </div>
-                    
-                    <div>
-                        <label>Curso:</label>
-                        <select name="curso" id="curso" class="form-select" required >
-                        <option value=""  >Seleccione</option>
-                            {% for curso in cursos %}
-                                <option value="{{ curso.id }}">
-                                    {{ curso.nombre_curso }}
-                                </option>
-                            {% endfor %}
-                        </select>
-                        <div>
-                            <label>Materias del curso:</label>
-                            <ul id="materias"></ul>
+            
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Registrar Estudiante</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+            
+                <div class="modal-body">
+                    <!--  Formulario de registro -->
+                    <form action="{% url 'registrar_estudiante' %}" method ="POST">
+                        {% csrf_token %}
+                        <div class="">
+                            <label for="nombre" class="form-label">Nombre :</label>
+                            <input type="text" class="form-control" name="nombre">
                         </div>
-                    </div>
-                <input type="submit" class="btn btn-primary " value="Enviar">
                     
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            </div>
+                        <div>
+                            <label for="apellido" class="form-label">Apellido :</label>
+                            <input type="text" class="form-control" name="apellido">
+                        </div>
+
+                        <div>
+                            <label for="edad" class="form-label">Edad :</label>
+                            <input type="text" class="form-control" name="edad">
+                        </div>
+                        
+                        <div>
+                            <label>Curso:</label>
+                            <select name="curso" id="curso" class="form-select" required >
+                                <option value=""  >Seleccione</option>
+                                {% for curso in cursos %}
+                                    <option value="{{ curso.id }}">
+                                        {{ curso.nombre_curso }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                            <div>
+                                <label>Materias del curso:</label>
+                                <ul id="materias"></ul>
+                            </div>
+                        </div>
+                        <input type="submit" class="btn btn-primary " value="Enviar">
+                        
+                    </form>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
             </div>
         </div>
     </div>
 
-<div class="table-container">
-    <table class="tabla">
-        <thead>
-            <tr >
-                <th>Nombre</th>
-                <th>Edad</th>
-                <th>Foto</th>
-                <th>Curso</th>
-                <th>Acciones</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for estudiante in estudiantes %}
-            <tr id="fila-{{ estudiante.id }}" >
-                <td data-label="Nombre" class="nombre" >{{ estudiante.nombre }}</td>
-                <td data-label="Edad" class="edad" >{{ estudiante.edad }} Años</td>
-                <td data-label="Foto"class="foto"  >Aqui va la foto</td>
-                <td data-label="Curso" class="curso" >{{estudiante.curso.nombre_curso }} </td>
+    <!-- Tabla de contenido -->
+    <div class="table-container">
+        <table class="tabla">
+            <thead>
+                <tr >
+                    <th>Nombre</th>
+                    <th>Edad</th>              
+                    <th>Curso</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for estudiante in estudiantes %}
+                <tr id="fila-{{ estudiante.id }}" >
+                    <td data-label="Nombre" class="nombre" >{{ estudiante.nombre }}</td>
+                    <td data-label="Edad" class="edad" >{{ estudiante.edad }} Años</td>
+                 
+                    <td data-label="Curso" class="curso" >{{estudiante.curso.nombre_curso }} </td>
 
-                <td data-label="Acciones">
-                    <!-- Editar Estudiante-->
+                    <!-- Acciones, Editar y Eliminar -->
+                    <td data-label="Acciones">
+                        <!-- Editar Estudiante-->
 
-                    <button class="btn btn-primary" data-bs-toggle="modal"  data-bs-target="#modalEditar{{estudiante.id}}"  ><i class="bi bi-pencil-square"></i></button>
-                    <div class="modal fade" id="modalEditar{{estudiante.id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                        <div class="modal-dialog modal-dialog-centered">
-                            <div class="modal-content">
-                            <div class="modal-header">
-                                <h1 class="modal-title fs-5" id="exampleModalLabel">Registrar Estudiante</h1>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body">
-                                <form class="formularioEdicion"  action="{% url 'editar_usuario' estudiante.id %}" method='post'>
-                                    {% csrf_token %}
-                                    <div class="">
-                                        <label for="nombre" class="form-label">Nombre :</label>
-                                        <input type="text" class="form-control" name="nombre" value="{{estudiante.nombre}}">
+                        <button class="btn btn-primary" data-bs-toggle="modal"  data-bs-target="#modalEditar{{estudiante.id}}"  ><i class="bi bi-pencil-square"></i></button>
+                        <div class="modal fade" id="modalEditar{{estudiante.id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h1 class="modal-title fs-5" id="exampleModalLabel">Registrar Estudiante</h1>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                     </div>
-                                    <div>
-                                        <label for="apellido" class="form-label">Apellido :</label>
-                                        <input type="text" class="form-control" name="apellido" value="{{ estudiante.apellido|default:''}}">
-                                    </div>
-                                    <div>
-                                        <label for="edad" class="form-label">Edad :</label>
-                                        <input type="text" class="form-control" name="edad" value="{{ estudiante.edad|default:''}}" >
+
+                                    <div class="modal-body">
+                                        <form class="formularioEdicion"  action="{% url 'editar_usuario' estudiante.id %}" method='post'>
+                                            {% csrf_token %}
+                                            <div class="">
+                                                <label for="nombre" class="form-label">Nombre :</label>
+                                                <input type="text" class="form-control" name="nombre" value="{{estudiante.nombre}}">
+                                            </div>
+                                            
+                                            <div>
+                                                <label for="apellido" class="form-label">Apellido :</label>
+                                                <input type="text" class="form-control" name="apellido" value="{{ estudiante.apellido|default:''}}">
+                                            </div>
+                                            
+                                            <div>
+                                                <label for="edad" class="form-label">Edad :</label>
+                                                <input type="text" class="form-control" name="edad" value="{{ estudiante.edad|default:''}}" >
+                                            </div>
+                                            
+                                            <!-- Select de los cursos -->
+                                            <div>
+                                                <label>Curso:</label>
+                                                <select name="curso_e" class="curso_e form-select"  required >
+                                                    <option value=""  >Seleccione</option>
+                                                    {% for curso in cursos %}
+                                                        {% if estudiante.curso.id == curso.id  %}
+                                                            <option value="{{ curso.id }}" selected>
+                                                                {{ curso.nombre_curso }}
+                                                            </option>
+                                                        {%else%}
+                                                        <option value="{{ curso.id }}">
+                                                            {{ curso.nombre_curso }}
+                                                        </option>
+                                                        {% endif %}
+
+                                                    
+                                                    {% endfor %}
+                                                </select>
+                                            <div>
+                                                    <label>Materias del curso:</label>
+                                                    <ul class="materias_e"></ul>
+                                                </div>
+                                            </div>
+                                            <input type="submit" class="btn btn-primary" value="Editar">
+                                        </form>
                                     </div>
                                     
-                                   <div>
-                                        <label>Curso:</label>
-                                        <select name="curso_e" class="curso_e form-select"  required >
-                                        <option value=""  >Seleccione</option>
-                                            {% for curso in cursos %}
-                                                {% if estudiante.curso.id == curso.id  %}
-                                                    <option value="{{ curso.id }}" selected>
-                                                        {{ curso.nombre_curso }}
-                                                    </option>
-                                                {%else%}
-                                                <option value="{{ curso.id }}">
-                                                    {{ curso.nombre_curso }}
-                                                </option>
-                                                {% endif %}
-
-                                             
-                                            {% endfor %}
-                                        </select>
-                                        <div>
-                                            <label>Materias del curso:</label>
-                                            <ul class="materias_e"></ul>
-                                        </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                    
                                     </div>
-                                    <input type="submit" class="btn btn-primary" value="Editar">
-                                </form>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                               
-                            </div>
 
+                                </div>
                             </div>
                         </div>
-                    </div>
 
 
-                    <button class="btn btn-danger" onclick='confirmarEliminar({{ estudiante.id }})' >  <i class="bi bi-trash3-fill"></i> </button>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-</div>
-
-<script>
-document.getElementById("curso").addEventListener("change", function () {
-    const cursoId = this.value;
-    const ul = document.getElementById("materias");
-    ul.innerHTML = "";
-
-    if (!cursoId) return;
-
-    fetch(`/materias-por-curso/${cursoId}/`)
-        .then(res => res.json())
-        .then(data => {
-            data.forEach(materia => {
-                console.log(materia.nombre)
-                ul.innerHTML += `<li>${materia.materia__nombre}</li>`;
-            });
-        });
-});
+                        <button class="btn btn-danger" onclick='confirmarEliminar({{ estudiante.id }})' >  <i class="bi bi-trash3-fill"></i> </button>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 
 
-document.querySelectorAll(".curso_e").forEach(select => {
-
-    select.addEventListener("change", function () {
-
-        const cursoId = this.value;
-
-        // buscar SOLO el ul del modal actual
-        const ul = this
-            .closest(".modal-body")
-            .querySelector(".materias_e");
-
-        ul.innerHTML = "";
-
-        if (!cursoId) return;
-
-        fetch(`/materias-por-curso/${cursoId}/`)
-            .then(res => res.json())
-            .then(data => {
-                data.forEach(materia => {
-                    ul.innerHTML += `<li>${materia.materia__nombre}</li>`;
-                });
-            });
-    });
-
-});
-
-
-document.addEventListener("DOMContentLoaded", function () {
-
-    document.querySelectorAll(".formularioEdicion").forEach(form => {
-
-        form.addEventListener("submit", function (e) {
-            e.preventDefault(); //  EVITA QUE SE ENVÍE NORMAL
-
-            const formData = new FormData(this);
-
-            fetch(this.action, {
-                method: "POST",
-                body: formData,
-                headers: {
-                    "X-CSRFToken": this.querySelector(
-                        "input[name='csrfmiddlewaretoken']"
-                    ).value
-                }
-            })
-            .then(res => res.json())
-            .then(data => {
-                console.log(data);
-
-                if (data.success) {
-
-                    const fila = document.getElementById(`fila-${data.id}`)
-                    const modal = bootstrap.Modal.getInstance(
-                    document.getElementById(`modalEditar${data.id}`)
-                    );
-                    modal.hide();
-                    fila.querySelector(".nombre").textContent = data.nombre;
-                    fila.querySelector(".edad").textContent = data.edad;
-                    fila.querySelector(".curso").textContent = data.curso;
-                    BtnClose = document.getElementById
-
-                    Swal.fire({
-                        icon: "success",
-                        title: "Correcto",
-                        text: data.message
-                    });
-              
-                }
-            });
-        });
-
-    });
-
-});
-</script>
-
-
-</script>
 {% endblock %}

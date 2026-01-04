@@ -10,7 +10,6 @@ def index(request):
 
     estudiantes = Estudiantes.objects.all()
     
- 
     return render(request, 'vistas/index.html', {
         'estudiantes': estudiantes
     })
@@ -80,13 +79,13 @@ def materias_por_curso(request, curso_id):
 def editar_usuario(request, id):
     estudiante = Estudiantes.objects.get(id = id)
 
-    
     if request.method == "POST" :
         
         estudiante.nombre = request.POST.get('nombre')
         estudiante.apellido = request.POST.get('apellido')
         estudiante.edad = request.POST.get('edad')
         curso_e = request.POST.get('curso_e')
+        
         estudiante.curso = Curso.objects.get(id = curso_e)
 
         estudiante.save()
